@@ -1,6 +1,6 @@
 # ModNameGoesHere
 
-A [NeosModLoader](https://github.com/zkxs/NeosModLoader) mod for [Neos VR](https://neos.com/) that does x.
+A [NeosModLoader](https://github.com/zkxs/NeosModLoader) mod for [Neos VR](https://neos.com/) that allows the individual parameters of the SSAO effect to be configured. The [NeosModSettings](https://github.com/badhaloninja/NeosModSettings) mod is recommended as it will allow you to tweak the values while Neos is running.
 
 ## Installation
 1. Install [NeosModLoader](https://github.com/zkxs/NeosModLoader).
