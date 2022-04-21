@@ -1,4 +1,4 @@
-﻿using HarmonyLib;
+using HarmonyLib;
 using NeosModLoader;
 using System;
 using System.Reflection;
@@ -24,10 +24,10 @@ namespace SsaoTweaks
         // Mod config registration
         [AutoRegisterConfigKey]
         private static readonly ModConfigurationKey<AmplifyOcclusionBase.ApplicationMethod> KEY_APPLYMETHOD = 
-            new ModConfigurationKey<AmplifyOcclusionBase.ApplicationMethod>("Apply Method", "How the occlusion effect should be applied", () => AmplifyOcclusionBase.ApplicationMethod.PostEffect);
+            new ModConfigurationKey<AmplifyOcclusionBase.ApplicationMethod>("Apply Method", "", () => AmplifyOcclusionBase.ApplicationMethod.PostEffect);
         [AutoRegisterConfigKey]
         private static readonly ModConfigurationKey<SampleCountLevel> KEY_SAMPLECOUNT = 
-            new ModConfigurationKey<SampleCountLevel>("Sample Count", "Amount of AO samples for occlusion effect", () => SampleCountLevel.Low);
+            new ModConfigurationKey<SampleCountLevel>("Sample Count", "", () => SampleCountLevel.Low);
 
         [AutoRegisterConfigKey]
         private static readonly ModConfigurationKey<bool> KEY_SMOOTHNORMALS = new ModConfigurationKey<bool>("Smooth Normals", "", () => false);
