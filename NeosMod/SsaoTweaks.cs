@@ -16,7 +16,7 @@ namespace SsaoTweaks
         // Mod registration
         public override string Name => "SsaoTweaks";
         public override string Author => "DoubleStyx";
-        public override string Version => "1.0.0";
+        public override string Version => "1.0.1";
         public override string Link => "https://github.com/DoubleStyx/SsaoTweaks";
 
         private static ModConfiguration config;
@@ -28,9 +28,10 @@ namespace SsaoTweaks
         [AutoRegisterConfigKey]
         private static readonly ModConfigurationKey<SampleCountLevel> KEY_SAMPLECOUNT = 
             new ModConfigurationKey<SampleCountLevel>("Sample Count", "", () => SampleCountLevel.Low);
-
         [AutoRegisterConfigKey]
-        private static readonly ModConfigurationKey<bool> KEY_SMOOTHNORMALS = new ModConfigurationKey<bool>("Smooth Normals", "", () => false);
+        private static readonly ModConfigurationKey<AmplifyOcclusionBase.PerPixelNormalSource> KEY_PERPIXELNORMALS =
+            new ModConfigurationKey<AmplifyOcclusionBase.PerPixelNormalSource>("Per Pixel Normals", "", () => AmplifyOcclusionBase.PerPixelNormalSource.None);
+
         [AutoRegisterConfigKey]
         private static readonly ModConfigurationKey<float> KEY_INTENSITY = new ModConfigurationKey<float>("Intensity", "", () => 1f);
         [AutoRegisterConfigKey]
@@ -40,7 +41,7 @@ namespace SsaoTweaks
         [AutoRegisterConfigKey]
         private static readonly ModConfigurationKey<float> KEY_POWEREXPONENT = new ModConfigurationKey<float>("Power Exponent", "", () => 0.6f);
         [AutoRegisterConfigKey]
-        private static readonly ModConfigurationKey<float> KEY_BIAS = new ModConfigurationKey<float>("Bias", "", () => 0f);
+        private static readonly ModConfigurationKey<float> KEY_BIAS = new ModConfigurationKey<float>("Bias", "", () => 0.05f);
         [AutoRegisterConfigKey]
         private static readonly ModConfigurationKey<float> KEY_THICKNESS = new ModConfigurationKey<float>("Thickness", "", () => 1f);
         [AutoRegisterConfigKey]
@@ -61,9 +62,6 @@ namespace SsaoTweaks
         private static readonly ModConfigurationKey<float> KEY_FILTERBLENDING = new ModConfigurationKey<float>("Filter Blending", "", () => 0.25f);
         [AutoRegisterConfigKey]
         private static readonly ModConfigurationKey<float> KEY_FILTERRESPONSE = new ModConfigurationKey<float>("Filter Response", "", () => 0.9f);
-
-
-        private static bool _first_trigger = false;
 
         // This override lets us change optional settings in our configuration definition
         public override void DefineConfiguration(ModConfigurationDefinitionBuilder builder)
@@ -102,25 +100,7 @@ namespace SsaoTweaks
 
         private static void SetPostProcessingPostfix(Camera c, bool enabled, bool motionBlur, bool screenspaceReflections)
         {
-            // Try to create new ssao
-            try
-            {
-                AmplifyOcclusionEffect ssao = c.GetComponent<AmplifyOcclusionEffect>();
-                if (ssao != null)
-                {
-                    ApplyPostFixValues(c);
-
-                    if (!_first_trigger)
-                    {
-                        _first_trigger = true;
-                        ModifyExistingSsaos(); // Modify existing ssaos
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                Warn($"failed to create/modify a new SSAO: {e}");
-            }
+            ModifyExistingSsaos();
         }
 
         private static void ModifyExistingSsaos()
@@ -162,7 +142,7 @@ namespace SsaoTweaks
             ssao.BlurPasses = config.GetValue(KEY_BLURPASSES);
             ssao.BlurRadius = config.GetValue(KEY_BLURRADIUS);
             ssao.CacheAware = config.GetValue(KEY_CACHEAWARE);
-            ssao.PerPixelNormals = config.GetValue(KEY_SMOOTHNORMALS) ? AmplifyOcclusionBase.PerPixelNormalSource.Camera : AmplifyOcclusionBase.PerPixelNormalSource.None;
+            ssao.PerPixelNormals = config.GetValue(KEY_PERPIXELNORMALS);
             ssao.BlurEnabled = config.GetValue(KEY_BLURENABLED);
             ssao.FilterEnabled = config.GetValue(KEY_FILTERENABLED);
             ssao.ApplyMethod = config.GetValue(KEY_APPLYMETHOD);
